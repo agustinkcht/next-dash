@@ -11,6 +11,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
 
   const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams); // copy of og
+    params.set("page", "1"); // set pagination to 1 on a new query
     // delete/set the query string on the URL based on the presence of input
     if (term) {
       params.set("query", term);
