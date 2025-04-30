@@ -142,7 +142,9 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
         </fieldset>
         {/* General Error DIV */}
         <div id="general-error-message" aria-live="polite">
-              <p className="mt-2 text-sm text-red-500"></p>
+          {state.errors && (
+            <p className="mt-2 text-sm text-red-500">{state.message}</p>
+          )}
         </div>
       </div>
       <div className="mt-6 flex justify-end gap-4">
