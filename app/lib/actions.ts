@@ -5,6 +5,26 @@ import postgres from "postgres";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { State } from "./definitions";
+import { signIn } from "@/auth";
+import { AuthError } from "next-auth";
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData
+) {
+  try {
+    await signIn('credentials', formData)
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin":
+          return "Invalid Credentials";
+        default:
+          return "Something went wrong";
+      }
+    }
+  }
+}
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
@@ -88,8 +108,8 @@ export async function updateInvoice(
   `;
   } catch (error) {
     return {
-      message: "Database Error: Failed to update invoice"
-    }
+      message: "Database Error: Failed to update invoice",
+    };
   }
   revalidatePath("/dashboard/invoices");
   redirect("/dashboard/invoices");
